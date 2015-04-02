@@ -4,13 +4,17 @@ version := "0.1-SNAPSHOT"
 
 organization := "N. Brahms"
 
-scalaVersion := "2.10.2"
+scalaVersion := "2.10.5"
 
 scalacOptions ++= Seq("-deprecation", "-feature")
 
 scalaSource in Compile := baseDirectory.value / "src"
 
 scalaSource in Test := baseDirectory.value / "test-src"
+
+unmanagedSourceDirectories in Compile <<= (scalaSource in Compile)(Seq(_))
+
+unmanagedSourceDirectories in Test <<= (scalaSource in Test)(Seq(_))
 
 sourcesInBase := false
 
