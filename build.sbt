@@ -1,8 +1,8 @@
-name := "Scala Command-Line Interface Parser"
+name := "sclip"
 
 version := "0.1-SNAPSHOT"
 
-organization := "N. Brahms"
+organization := "org.nbrahms"
 
 scalaVersion := "2.10.5"
 
