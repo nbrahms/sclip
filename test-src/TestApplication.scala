@@ -1,4 +1,4 @@
-package org.nbrahms.sclip
+import org.nbrahms.sclip._
 
 class Options(args: Array[String]) extends Clip(args) {
   // All options are declared as vals
