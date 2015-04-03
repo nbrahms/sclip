@@ -28,3 +28,5 @@ libraryDependencies ++= Seq(
   "com.chuusai" % "shapeless_2.10.4" % "2.0.0",
   "org.scalatest" %% "scalatest" % "2.2.1" % "test"
 )
+
+publishTo := Some(Resolver.file("file",  new File( "releases" )) )
