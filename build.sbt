@@ -25,7 +25,9 @@ resolvers ++= Seq(
 )
 
 libraryDependencies ++= Seq(
-  "com.chuusai" % "shapeless_2.10.4" % "2.0.0",
+  if (scalaVersion.value startsWith "2.10") {
+    "com.chuusai" % ("shapeless_" + scalaVersion.value) % "2.0.0"
+  } else "com.chuusai" %% "shapeless" % "2.0.0",
   "org.scalatest" %% "scalatest" % "2.2.1" % "test"
 )
 
