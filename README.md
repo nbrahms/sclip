@@ -186,4 +186,4 @@ resolvers += "sclip" at "https://raw.githubusercontent.com/nbrahms/sclip/release
 libraryDependencies += "org.nbrahms" %% "sclip" % "0.1"
 ```
 
-SCLIP is build on Scala 2.10.5 and 2.11.5, and should be compatible with 2.10.4 or 2.11.2 and higher.
+SCLIP is built on Scala 2.10.5 and 2.11.5, and should be compatible with 2.10.4 or 2.11.2 and higher.
