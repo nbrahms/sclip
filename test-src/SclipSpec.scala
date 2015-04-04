@@ -10,7 +10,7 @@ class SclipSpec extends WordSpec with Matchers {
     val double = opt[Double]("double", shortChar = 'D')
     val seq = sopt[Int]("seq")
     val map = kv[Int]("map")
-    val tuple = opt[(String, String)]("tuple", hasShort = false)
+    val tuple = opt[(String, Double)]("tuple", hasShort = false)
     val pixel = opt[Pixel]("pixel", hasShort = false)
     val floatWithDefault = dopt("float", 1.0F)
     val flag: Boolean = flag("xflag")
@@ -34,7 +34,7 @@ class SclipSpec extends WordSpec with Matchers {
         ClipTest("-D 5.3").double should be (Some(5.3))
       }
       "parse tuples" in {
-        ClipTest("--tuple a b").tuple should be (Some("a", "b"))
+        ClipTest("--tuple a 3.0").tuple should be (Some("a", 3.0))
       }
       "parse case classes" in {
         ClipTest("--pixel 123 456").pixel should be (Some(Pixel(123, 456)))
@@ -150,7 +150,7 @@ class SclipSpec extends WordSpec with Matchers {
     "using custom parsers" should {
       "parse" in {
         import java.net.InetAddress
-        implicit val inetParser = new UnaryParser(InetAddress.getByName(_))
+        implicit val inetParser = new UnaryParser(InetAddress.getByName(_), "address")
         new ClipTest("-a 127.0.0.1") {
           val address = opt[InetAddress]("address")
         }.address should be (Some(InetAddress.getByName("127.0.0.1")))
@@ -249,6 +249,36 @@ class SclipSpec extends WordSpec with Matchers {
         an[IllegalStateException] should be thrownBy {
           new ClipTest("foo -i 2") { check(NoExtra) }
         }
+      }
+    }
+    "checking help" when {
+      def helpClip(args: String) = new Clip(args.split("\\s")) {
+        val isAsync = flag("async", desc = "If present, all requests are executed asynchronously")
+        val host = ropt[String]("host", desc = "Host address")
+        val port = dopt("port", 80, desc = "Host port, or 80 if missing")
+        check(AutoHelp)
+      }
+      "generate help when called with --help" in {
+        val help = the[HelpCalled] thrownBy helpClip("--help")
+        help.getMessage.trim should be {
+"""--help called:
+Usage:
+  [flags] --host string1 [options]
+
+  --host|-h string1
+      Host address
+
+Flags:
+  --async|-a
+      If present, all requests are executed asynchronously
+
+Options:
+  --port|-p int1
+      Host port, or 80 if missing"""
+        }
+      }
+      "not generate help when called without --help" in {
+        helpClip("-h 127.0.0.1")
       }
     }
   }
