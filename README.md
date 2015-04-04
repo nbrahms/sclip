@@ -75,7 +75,7 @@ val pixel = opt[Pixel]("pixel")  // parses "--pixel 123 456" as Pixel(123, 456)
 
 ```scala
 import org.apache.commons.codec.binary.Hex
-implicit val hexParser = new UnaryParser[Seq[Byte]](Hex.decodeHex(_).toSeq)
+implicit val hexParser = new UnaryParser[Seq[Byte]](Hex.decodeHex(_).toSeq, "hex")
 val hash = opt[Seq[Byte]]("md5") // parses "--md5 d131dd02c5e6eec4" as a byte seq
 ```
 
@@ -89,6 +89,15 @@ $ java Application --host 127.0.0.1 -p 456
 val noShort = opt[Int]("noShort", hasShort = false) // Does not parse "-n"
 val onlyShort = opt[Int]("O")                       // Parses "-O", but not "--O"
 val withChar = opt[Int]("user", shortChar = 'U')    // Parses "--user" or "-U'
+```
+
+You can also disable short option forms by default:
+```scala
+class Options(args: Seq[String]) extends Clip(args, NoDefaultShort) {
+  val noShort = opt[Int]("noShort")
+  val onlyShort = opt[Int]("O")
+  val withShort = opt[Int]("withShort", hasShort = true, shortChar = 's')
+}
 ```
 
 * Flags and grouped flags
@@ -107,6 +116,35 @@ class Options extends Clip(args) {
   ...
   check(Unrecognized, NoRepeated, NoLeading)   // Must go after your options
 }
+```
+
+* Auto-generated help:
+
+```scala
+class Options extends Clip(args) {
+  val isAsync = flag("async", desc = "If present, all requests are executed asynchronously")
+  val host = ropt[String]("host", desc = "Host address")
+  val port = dopt("port", 80, desc = "Host port, or 80 if missing")
+  check(AutoHelp)
+}
+```
+```
+$ java Application --help
+Exception in thread "main" org.nbrahms.sclip.package$HelpCalled: --help called:
+Usage:
+  [flags] --host string1 [options]
+
+  --host|-h string1
+      Host address
+
+Flags:
+  --async|-a
+      If present, all requests are executed asynchronously
+
+Options:
+  --port|-p int1
+      Host port, or 80 if missing
+    ...
 ```
 
 * Immutable and thread-safe
