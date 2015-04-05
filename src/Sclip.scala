@@ -102,7 +102,7 @@ package object sclip {
    * By default, options have both a long and short form, e.g.:
    * `--host` or `-h`.
    */
-  object NoDefaultShort
+  object NoDefaultShort extends Behavior
 
   class HelpCalled(msg: String) extends Exception(msg) with scala.util.control.NoStackTrace
 
