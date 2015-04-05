@@ -190,7 +190,7 @@ package object sclip {
     private[this] var _remainingFlags = _flagGroup
     private def alias(name: String, hasShort: Boolean, shortChar: Char): Option[Char] =
       if (!hasShort) None
-      else Some(if (shortChar == '\0') name.head else shortChar)
+      else Some(if (shortChar == 0) name.head else shortChar)
     private def rip(name: String, num: Int, strict: Boolean): Option[Seq[String]] = {
       val ix = _remaining.indexWhere(s => if (strict) s == name else s startsWith name)
       if (ix == -1) return None
@@ -265,7 +265,7 @@ package object sclip {
      *
      * If the option is present, returns a Some of the parsed value, otherwise None.
      */
-    protected def opt[A](name: String, hasShort: Boolean = defaultShortForm, shortChar: Char = '\0',
+    protected def opt[A](name: String, hasShort: Boolean = defaultShortForm, shortChar: Char = 0,
         isRequired: Boolean = false, desc: String = "")(implicit parser: Parser[A]): Option[A] = {
       val sc = alias(name, hasShort, shortChar)
       register(name, sc, parser, isRequired, desc = desc)
@@ -280,7 +280,7 @@ package object sclip {
      *
      * As for opt, but returns the parsed value directly if the option is present, otherwise the default value.
      */
-    protected def dopt[A](name: String, default: => A, hasShort: Boolean = defaultShortForm, shortChar: Char = '\0',
+    protected def dopt[A](name: String, default: => A, hasShort: Boolean = defaultShortForm, shortChar: Char = 0,
         isRequired: Boolean = false, desc: String = "")(implicit parser: Parser[A]): A =
       opt(name, hasShort, shortChar, desc = desc)(parser).getOrElse(default)
 
@@ -289,7 +289,7 @@ package object sclip {
      * As for opt, but throws an IllegalArgumentException if the option is missing.
      */
     protected def ropt[A](name: String, message: String => String = s => s"Missing required argument $s",
-        hasShort: Boolean = defaultShortForm, shortChar: Char = '\0', desc: String = "")(implicit parser: Parser[A]): A =
+        hasShort: Boolean = defaultShortForm, shortChar: Char = 0, desc: String = "")(implicit parser: Parser[A]): A =
       opt(name, hasShort, shortChar, true, desc = desc)(parser) getOrElse {
         if (!(remaining contains "--help")) throw new IllegalArgumentException(message(name))
         else null.asInstanceOf[A]
@@ -308,7 +308,7 @@ package object sclip {
      *   --opt value1 value2 value3 ...
      * }}}
      */
-    protected def sopt[A](name: String, hasShort: Boolean = defaultShortForm, shortChar: Char = '\0',
+    protected def sopt[A](name: String, hasShort: Boolean = defaultShortForm, shortChar: Char = 0,
         desc: String = "")(implicit parser: Parser[A]): Seq[A] =
       opt[Seq[A]](name, hasShort, shortChar, false, desc = desc).getOrElse(Seq.empty)
 
@@ -330,7 +330,7 @@ package object sclip {
      *
      * Returns true iff the flag is present.
      */
-    protected def flag(name: String, hasShort: Boolean = defaultShortForm, shortChar: Char = '\0', desc: String = ""): Boolean = {
+    protected def flag(name: String, hasShort: Boolean = defaultShortForm, shortChar: Char = 0, desc: String = ""): Boolean = {
       val sc = alias(name, hasShort, shortChar)
       register(name, sc, NullaryParser, false, desc = desc)
       sc.filter(_remainingFlags contains _).map { c =>
@@ -354,7 +354,7 @@ package object sclip {
      *   -ok1=v1,k2=v2,...
      * }}}
      */
-    protected def kv[A](name: String, hasShort: Boolean = defaultShortForm, shortChar: Char = '\0',
+    protected def kv[A](name: String, hasShort: Boolean = defaultShortForm, shortChar: Char = 0,
         desc: String = "")(implicit parser: UnaryParser[A]): Map[String, A] = {
       val sc = alias(name, hasShort, shortChar)
       register(name, sc, seqParser[A], false, isKv = true, desc = desc)
