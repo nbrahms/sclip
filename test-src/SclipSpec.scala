@@ -68,6 +68,9 @@ class SclipSpec extends WordSpec with Matchers {
         ClipTest("-i 2 --seq 1 2 3 --byte 1").seq should be (Seq(1, 2, 3))
         ClipTest("--seq 1 2 3 -i 2").seq should be (Seq(1, 2, 3))
       }
+      "parse negative numbers" in {
+        ClipTest("--seq 1 -4 5").seq should be (Seq(1, -4, 5))
+      }
     }
     "using flags" should {
       "yield true for present long flags" in {

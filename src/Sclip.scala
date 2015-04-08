@@ -198,7 +198,7 @@ package object sclip {
       val headArg = rest.head.drop(name.size)
       val toParse = (if (!headArg.isEmpty) headArg +: rest.tail else rest.tail)
       val splitIx = if (num >= 0) num else {
-        val nix = toParse.indexWhere(_ startsWith "-")
+        val nix = toParse.indexWhere(_ startsWith "-{1,2}\\d+\\M")
         if (nix >= 0) nix else toParse.size
       }
       val (result, back) = toParse.splitAt(splitIx)
