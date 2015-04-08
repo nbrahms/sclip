@@ -104,6 +104,41 @@ package object sclip {
    */
   object NoDefaultShort extends Behavior
 
+  /**Treats negative numbers as the next option when parsing sequences.
+   *
+   * By default, negative numbers in a sequence are treated as sequence parameters.
+   * Adding this behavior instead ends the sequence at the first negative number, which
+   * may then be available as an option itself.
+   *
+   * For example, consider argument list:
+   * ```
+   *   --seq 1 0 -1
+   * ```
+   *
+   * By default, `sopt[Int]("seq")` will parse the argument list as `Seq(1, 0, -1)`.
+   *
+   * Using `StopSequenceOnNegative` will cause the list to be parsed as `Seq(1, 0)`,
+   * allowing you to also use `flag("1")`.
+   *
+   * If this behavior is NOT used, you will get different behavior for numeric options depending
+   * on whether your numeric option is declared before or after your sequence:
+   *
+   * With
+   * ```
+   *   val seq = seq[Int]("seq")
+   *   val one = flag("1")
+   * ```
+   * `seq` will be `Seq(1, 0, -1)`, and `one` will be `false`.
+   *
+   * With
+   * ```
+   *   val one = flag("1")
+   *   val seq = seq[Int]("seq")
+   * ```
+   * `seq` will be `Seq(1, 0)`, and `one` will be `true`.
+   */
+  object StopSequenceOnNegative extends Behavior
+
   class HelpCalled(msg: String) extends Exception(msg) with scala.util.control.NoStackTrace
 
   trait LowPriorityImplicits {
@@ -188,6 +223,7 @@ package object sclip {
           rest.head.toSet.drop(1)
       }
     private[this] var _remainingFlags = _flagGroup
+    private[this] val seqStopMatch = if (behaviors contains StopSequenceOnNegative) "-" else "-{1,2}\\d+\\M"
     private def alias(name: String, hasShort: Boolean, shortChar: Char): Option[Char] =
       if (!hasShort) None
       else Some(if (shortChar == 0) name.head else shortChar)
@@ -198,7 +234,7 @@ package object sclip {
       val headArg = rest.head.drop(name.size)
       val toParse = (if (!headArg.isEmpty) headArg +: rest.tail else rest.tail)
       val splitIx = if (num >= 0) num else {
-        val nix = toParse.indexWhere(_ startsWith "-{1,2}\\d+\\M")
+        val nix = toParse.indexWhere(_ startsWith seqStopMatch)
         if (nix >= 0) nix else toParse.size
       }
       val (result, back) = toParse.splitAt(splitIx)

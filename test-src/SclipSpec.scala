@@ -4,7 +4,7 @@ import org.scalatest.{Matchers, WordSpec}
 
 class SclipSpec extends WordSpec with Matchers {
   case class Pixel(x: Int, y: Int)
-  class ClipTest(cl: String) extends Clip(cl.split("\\s+")) {
+  class ClipTest(cl: String, behaviors: Behavior*) extends Clip(cl.split("\\s+"), behaviors: _*) {
     val byte = opt[Byte]("byte")
     val int = opt[Int]("int")
     val double = opt[Double]("double", shortChar = 'D')
@@ -32,6 +32,9 @@ class SclipSpec extends WordSpec with Matchers {
       }
       "parse using alternate short names" in {
         ClipTest("-D 5.3").double should be (Some(5.3))
+      }
+      "parse negative numbers" in {
+        ClipTest("-i -1").int should be (Some(-1))
       }
       "parse tuples" in {
         ClipTest("--tuple a 3.0").tuple should be (Some("a", 3.0))
@@ -68,8 +71,13 @@ class SclipSpec extends WordSpec with Matchers {
         ClipTest("-i 2 --seq 1 2 3 --byte 1").seq should be (Seq(1, 2, 3))
         ClipTest("--seq 1 2 3 -i 2").seq should be (Seq(1, 2, 3))
       }
-      "parse negative numbers" in {
+      "parse negative numbers by default" in {
         ClipTest("--seq 1 -4 5").seq should be (Seq(1, -4, 5))
+        new ClipTest("--seq 1 0 -1") { val one = flag("1") }.one should be (false)
+      }
+      "not parse negative numbers with StopSequenceOnNegative" in {
+        new ClipTest("--seq 1 0 -1", StopSequenceOnNegative).seq should be (Seq(1, 0))
+        new ClipTest("--seq 1 0 -1", StopSequenceOnNegative) { val one = flag("1") }.one should be (true)
       }
     }
     "using flags" should {
