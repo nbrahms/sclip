@@ -206,12 +206,12 @@ class SclipSpec extends WordSpec with Matchers {
         new ClipTest("-i 2") { check(Unrecognized) }
       }
       "fail with unrecognized options" in {
-        an[IllegalStateException] should be thrownBy {
+        an[IllegalArgumentException] should be thrownBy {
           new ClipTest("-i 2 -n") { check(Unrecognized) }
         }
       }
       "fail with unrecognized flags" in {
-        an[IllegalStateException] should be thrownBy {
+        an[IllegalArgumentException] should be thrownBy {
           new ClipTest("-xyu") { check(Unrecognized) }
         }
       }
@@ -224,17 +224,17 @@ class SclipSpec extends WordSpec with Matchers {
         new ClipTest("-z") { check(NoRepeated) }
       }
       "fail for repeated long options" in {
-        an[IllegalStateException] should be thrownBy {
+        an[IllegalArgumentException] should be thrownBy {
           new ClipTest("--int 1 --int 2") { check(NoRepeated) }
         }
       }
       "fail for repeated long + short options" in {
-        an[IllegalStateException] should be thrownBy {
+        an[IllegalArgumentException] should be thrownBy {
           new ClipTest("--int 1 -i 2") { check(NoRepeated) }
         }
       }
       "fail for repeated grouped + short flags" in {
-        an[IllegalStateException] should be thrownBy {
+        an[IllegalArgumentException] should be thrownBy {
           new ClipTest("-xyz -x") { check(NoRepeated) }
         }
       }
@@ -247,7 +247,7 @@ class SclipSpec extends WordSpec with Matchers {
         new ClipTest("-i 2 foo") { check(NoLeading) }
       }
       "fail with leading arguments" in {
-        an[IllegalStateException] should be thrownBy {
+        an[IllegalArgumentException] should be thrownBy {
           new ClipTest("foo -i 2") { check(NoLeading) }
         }
       }
@@ -257,12 +257,12 @@ class SclipSpec extends WordSpec with Matchers {
         new ClipTest("-i 2") { check(NoExtra) }
       }
       "pass with trailing arguments" in {
-        an[IllegalStateException] should be thrownBy {
+        an[IllegalArgumentException] should be thrownBy {
           new ClipTest("-i 2 foo") { check(NoExtra) }
         }
       }
       "fail with leading arguments" in {
-        an[IllegalStateException] should be thrownBy {
+        an[IllegalArgumentException] should be thrownBy {
           new ClipTest("foo -i 2") { check(NoExtra) }
         }
       }
