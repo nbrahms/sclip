@@ -289,6 +289,8 @@ Flags:
       If present, all requests are executed asynchronously
 
 Options:
+  --help
+      Display this message
   --port|-p int1
       Host port, or 80 if missing"""
         }
