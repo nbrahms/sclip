@@ -15,7 +15,7 @@ class SclipSpec extends WordSpec with Matchers {
     val floatWithDefault = dopt("float", 1.0F)
     val flag: Boolean = flag("xflag")
     val flag2: Boolean = flag("yflag")
-    val flag3: Boolean = flag("z")
+    val flag3: Boolean = flag("z", hasShort = true)
   }
   object ClipTest {
     def apply(args: String) = new ClipTest(args)
@@ -194,6 +194,11 @@ class SclipSpec extends WordSpec with Matchers {
       }
       "yield remaining arguments" in {
         ClipTest("start --byte 1 --int 2 --double 3.0 end").remaining should be (Seq("start", "end"))
+      }
+    }
+    "used with NoDefaultShort behavior" should {
+      "not generate short arguments" in {
+        new ClipTest("-i 2", NoDefaultShort).int should be (None)
       }
     }
     "checking unrecognized options" should {

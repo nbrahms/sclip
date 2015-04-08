@@ -247,7 +247,7 @@ package object sclip {
     private def register(name: String, shortChar: Option[Char], parser: Parser[_], isRequired: Boolean, isKv: Boolean = false, desc: String = "") {
       if (_registry.contains(name)) throw new IllegalStateException(s"$name is already registered as an option")
       if (name.size < 1) throw new IllegalArgumentException("Can not have empty option names")
-      if (name.size == 1 && shortChar.isEmpty) throw new IllegalStateException("Single-character options must use short form")
+      if (name.size == 1 && shortChar.isEmpty) throw new IllegalStateException(s"Single-character option '$name' must use short form")
       val key = if (name.size > 1) "--" + name else "-" + shortChar.get
       val short = shortChar foreach { sc =>
         if (_registry.hasShort(sc)) throw new IllegalStateException(s"Alias $sc is already used")
