@@ -278,7 +278,8 @@ package object sclip {
       val requiredHeadLine = required map { kv => " " + kv._1 + toValues(kv._2, false) } mkString ""
       val requiredDesc = toDesc("\n\n", required)
 
-      val options = _registry.optional.toSeq.sortBy(_._1)
+      val helpRegistration = "--help" -> Registration("help", None, NullaryParser, false, false, "Display this message")
+      val options = (_registry.optional.toSeq :+ helpRegistration).sortBy(_._1)
       val optionHeadLine = if (!options.isEmpty) " [options]" else ""
       val optionDesc = toDesc("\n\nOptions:\n", options)
 
@@ -446,22 +447,22 @@ package object sclip {
               _filtered.filter(_ == "-" + short).size
             } getOrElse 0
             if (nLong + nShort > 1)
-              throw new IllegalStateException(s"Repeated option $long")
+              throw new IllegalArgumentException(s"Repeated option $long")
           }
         case Unrecognized =>
           remaining find (_ startsWith "-") foreach { arg =>
-            throw new IllegalStateException(s"Unrecognized or repeated option $arg")
+            throw new IllegalArgumentException(s"Unrecognized or repeated option $arg")
           }
           if (!_flagGroup.isEmpty)
-            throw new IllegalStateException(s"Unrecognized flags ${_flagGroup.mkString(",")}")
+            throw new IllegalArgumentException(s"Unrecognized flags ${_flagGroup.mkString(",")}")
         case NoLeading | NoExtra if remaining.isEmpty =>
         case NoLeading =>
           val ix = _filtered indexWhere (_ == remaining.head)
           if ((_filtered.size - ix) != remaining.size)
-            throw new IllegalStateException(s"Invalid input ${remaining.head}")
+            throw new IllegalArgumentException(s"Invalid input ${remaining.head}")
         case NoExtra =>
           if (remaining.size != 0)
-            throw new IllegalStateException(s"Invalid input ${remaining.head}")
+            throw new IllegalArgumentException(s"Invalid input ${remaining.head}")
         case AutoHelp if remaining contains "--help" =>
           help()
         case _ =>

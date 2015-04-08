@@ -1,6 +1,6 @@
 name := "sclip"
 
-version := "0.2.1-SNAPSHOT"
+version := "0.2.2-SNAPSHOT"
 
 organization := "org.nbrahms"
 
