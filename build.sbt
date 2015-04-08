@@ -6,7 +6,7 @@ organization := "org.nbrahms"
 
 // Compilation
 
-scalaVersion := "2.10.5"
+scalaVersion := "2.11.5"
 
 scalacOptions ++= Seq("-deprecation", "-feature")
 
