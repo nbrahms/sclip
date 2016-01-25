@@ -260,9 +260,7 @@ class SclipSpec extends WordSpec with Matchers {
         new ClipTest("-i 2") { check(NoExtra) }
       }
       "pass with trailing arguments" in {
-        an[IllegalArgumentException] should be thrownBy {
-          new ClipTest("-i 2 foo") { check(NoExtra) }
-        }
+        new ClipTest("-i 2 foo") { tail[String]; check(NoExtra) }
       }
       "fail with leading arguments" in {
         an[IllegalArgumentException] should be thrownBy {
