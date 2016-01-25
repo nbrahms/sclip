@@ -66,8 +66,8 @@ val map = kv[Int]("map")         // parses "--map a=1,b=2" or "--map a=1 b=2" as
 * Trailing arguments
 
 ```scala
-trail[Int]                       // parses first trailing argument as Int
-trail[Seq[File]]                 // parses remaining trailing arguments as File objects
+tail[Int]                        // parses first trailing argument as Int
+tail[Seq[File]]                  // parses remaining trailing arguments as File objects
 ```
 
 * Automatically parses primitives, sequences, tuples and case classes
