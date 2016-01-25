@@ -39,7 +39,7 @@ That's all you need to get going, but it has a lot more.
 
 ## Full documentation
 
-See the full [0.2.2 API documentation](http://nbrahms.github.io/sclip/doc/0.2.2/index.html#org.nbrahms.sclip.package).
+See the full [0.2.3 API documentation](http://nbrahms.github.io/sclip/doc/0.2.3/index.html#org.nbrahms.sclip.package).
 
 ## Examples
 
