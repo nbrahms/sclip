@@ -223,7 +223,7 @@ package object sclip {
           rest.head.toSet.drop(1)
       }
     private[this] var _remainingFlags = _flagGroup
-    private[this] val seqStopMatch = if (behaviors contains StopSequenceOnNegative) "-" else "-{1,2}\\d+\\M"
+    private[this] val seqItemMatch = if (behaviors contains StopSequenceOnNegative) "[^-].*" else "([^-].*|-?\\d+\\b)"
     private def alias(name: String, hasShort: Boolean, shortChar: Char): Option[Char] =
       if (!hasShort) None
       else Some(if (shortChar == 0) name.head else shortChar)
@@ -234,7 +234,7 @@ package object sclip {
       val headArg = rest.head.drop(name.size)
       val toParse = (if (!headArg.isEmpty) headArg +: rest.tail else rest.tail)
       val splitIx = if (num >= 0) num else {
-        val nix = toParse.indexWhere(_ startsWith seqStopMatch)
+        val nix = toParse.indexWhere(s => !(s matches seqItemMatch))
         if (nix >= 0) nix else toParse.size
       }
       val (result, back) = toParse.splitAt(splitIx)

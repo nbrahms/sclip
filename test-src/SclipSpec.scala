@@ -69,6 +69,9 @@ class SclipSpec extends WordSpec with Matchers {
       "parse sequences" in {
         ClipTest("--seq 1 2 3").seq should be (Seq(1, 2, 3))
         ClipTest("-i 2 --seq 1 2 3 --byte 1").seq should be (Seq(1, 2, 3))
+        new ClipTest("--seq 1 2 3 --after 5") {
+          opt[Int]("after")
+        }.seq should be (Seq(1, 2, 3))
         ClipTest("--seq 1 2 3 -i 2").seq should be (Seq(1, 2, 3))
       }
       "parse negative numbers by default" in {
@@ -257,9 +260,7 @@ class SclipSpec extends WordSpec with Matchers {
         new ClipTest("-i 2") { check(NoExtra) }
       }
       "pass with trailing arguments" in {
-        an[IllegalArgumentException] should be thrownBy {
-          new ClipTest("-i 2 foo") { check(NoExtra) }
-        }
+        new ClipTest("-i 2 foo") { tail[String]; check(NoExtra) }
       }
       "fail with leading arguments" in {
         an[IllegalArgumentException] should be thrownBy {

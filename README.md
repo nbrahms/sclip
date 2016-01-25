@@ -35,7 +35,13 @@ Connecting to 127.0.0.1:80
 
 You can run this example (with correct classpath), by running `bin/launch-test.sh` after compilation.
 
-That's all you need to get going, but it has a lot more:
+That's all you need to get going, but it has a lot more.
+
+## Full documentation
+
+See the full [0.2.2 API documentation](http://nbrahms.github.io/sclip/doc/0.2.2/index.html#org.nbrahms.sclip.package).
+
+## Examples
 
 * Required, default-valued, and monadic options
 
@@ -60,8 +66,8 @@ val map = kv[Int]("map")         // parses "--map a=1,b=2" or "--map a=1 b=2" as
 * Trailing arguments
 
 ```scala
-trail[Int]                       // parses first trailing argument as Int
-trail[Seq[File]]                 // parses remaining trailing arguments as File objects
+tail[Int]                        // parses first trailing argument as Int
+tail[Seq[File]]                  // parses remaining trailing arguments as File objects
 ```
 
 * Automatically parses primitives, sequences, tuples and case classes
